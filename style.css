@@ -873,6 +873,22 @@ body {
     opacity: 1;
   }
   
+  /* Adjust hover overlay size for small hero cards */
+  .card .t-meta {
+    left: 6px;
+    right: 6px;
+    bottom: 6px;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+  .card .t-meta .nm {
+    font-size: 10px;
+    line-height: 1.1;
+  }
+  .card .t-meta .rl {
+    font-size: 9px;
+  }
+
   .team-section {
     padding: 60px 16px 40px;
   }
