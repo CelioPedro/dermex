@@ -323,12 +323,14 @@ const navLinksContainer = document.getElementById("navLinks");
 if (hamburger && navLinksContainer) {
   hamburger.addEventListener("click", () => {
     navLinksContainer.classList.toggle("open");
+    hamburger.classList.toggle("is-active");
   });
 
   // Close menu when clicking a link
   navLinksContainer.querySelectorAll("a").forEach(link => {
     link.addEventListener("click", () => {
       navLinksContainer.classList.remove("open");
+      hamburger.classList.remove("is-active");
     });
   });
 }
