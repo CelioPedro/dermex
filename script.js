@@ -10,214 +10,129 @@ gsap.set("#subline", { opacity: 0, y: 20 });
 gsap.set(".t-card", { opacity: 0 });
 gsap.set(".stats-inner", { opacity: 0 });
 
-// Apply each card's natural rotation as the rest-state, but start them off-screen above + rotated
-document.querySelectorAll(".card").forEach((card) => {
-  const rot = parseFloat(card.dataset.rot) || 0;
-  card.dataset.restRot = rot;
-  gsap.set(card, { y: -800, rotation: rot + 25, opacity: 0, scale: 0.7 });
-});
+// ============================================================
+// RESPONSIVE MATCHMEDIA FOR HERO
+// ============================================================
+let mm = gsap.matchMedia();
 
-// ============================================================
-// INTRO TIMELINE
-// ============================================================
-const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
-intro
-  .to("#nav", { opacity: 1, y: 0, duration: 0.8 }, 0.1)
-  .to(
-    ".small-team .word > span",
-    {
-      y: "0%",
-      duration: 0.9,
-      stagger: 0.08,
-      ease: "power3.out"
-    },
-    0.3
-  )
-  .to(
-    ".big-results .letter",
-    {
-      y: 0,
-      opacity: 1,
-      duration: 0.9,
-      stagger: 0.05,
-      ease: "back.out(1.6)"
-    },
-    0.55
-  )
-  .to(
-    ".card",
-    {
-      y: 0,
-      opacity: 1,
-      scale: 1,
-      rotation: (i, el) => parseFloat(el.dataset.restRot) || 0,
-      duration: 1.1,
-      stagger: { each: 0.08, from: "center" },
-      ease: "back.out(1.4)"
-    },
-    0.8
-  )
-  .to("#subline", { opacity: 1, y: 0, duration: 0.8 }, 1.6);
-
-// ============================================================
-// CONTINUOUS FLOAT ON CARDS
-// ============================================================
-document.querySelectorAll(".card").forEach((card, i) => {
-  const rot = parseFloat(card.dataset.restRot) || 0;
-  gsap.to(card, {
-    y: `+=${8 + (i % 3) * 5}`,
-    rotation: rot + (i % 2 === 0 ? 1.5 : -1.5),
-    duration: 3 + (i % 4) * 0.5,
-    delay: 1.8 + i * 0.1,
-    ease: "sine.inOut",
-    yoyo: true,
-    repeat: -1
-  });
-});
-
-// ============================================================
-// MOUSE PARALLAX ON CARDS
-// ============================================================
-const hero = document.querySelector(".hero");
-let mx = 0,
-  my = 0,
-  tx = 0,
-  ty = 0;
-hero.addEventListener("mousemove", (e) => {
-  const r = hero.getBoundingClientRect();
-  mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
-  my = ((e.clientY - r.top) / r.height - 0.5) * 2;
-});
-hero.addEventListener("mouseleave", () => {
-  mx = 0;
-  my = 0;
-});
-
-function parallax() {
-  tx += (mx - tx) * 0.05;
-  ty += (my - ty) * 0.05;
+mm.add("(min-width: 751px)", () => {
+  // Apply each card's natural rotation as the rest-state
   document.querySelectorAll(".card").forEach((card) => {
-    const d = parseFloat(card.dataset.depth) || 8;
-    card.style.translate = `${tx * d}px ${ty * d * 0.5}px`;
+    const rot = parseFloat(card.dataset.rot) || 0;
+    card.dataset.restRot = rot;
+    gsap.set(card, { y: -800, rotation: rot + 25, opacity: 0, scale: 0.7 });
   });
-  requestAnimationFrame(parallax);
-}
-parallax();
 
-// ============================================================
-// CARD HOVER 3D LIFT
-// ============================================================
-document.querySelectorAll(".card").forEach((card) => {
-  const restRot = parseFloat(card.dataset.restRot) || 0;
-  card.addEventListener("mousemove", (e) => {
-    const r = card.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    gsap.to(card, {
-      rotateX: -py * 16,
-      rotateY: px * 16,
-      scale: 1.12,
-      zIndex: 20,
-      duration: 0.4,
-      ease: "power2.out",
-      transformPerspective: 700,
-      overwrite: "auto"
-    });
-  });
-  card.addEventListener("mouseleave", () => {
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      scale: 1,
-      zIndex: card.style.zIndex || "",
-      duration: 0.8,
-      ease: "elastic.out(1, 0.6)",
-      overwrite: "auto"
-    });
-  });
-  card.addEventListener("click", () => {
-    gsap.fromTo(
-      card,
-      { scale: 1.15 },
-      {
-        scale: 1.05,
-        duration: 0.15,
-        yoyo: true,
-        repeat: 1,
-        ease: "power2.inOut"
-      }
-    );
-  });
-});
+  // INTRO TIMELINE
+  const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+  intro
+    .to("#nav", { opacity: 1, y: 0, duration: 0.8 }, 0.1)
+    .to(".small-team .word > span", { y: "0%", duration: 0.9, stagger: 0.08, ease: "power3.out" }, 0.3)
+    .to(".big-results .letter", { y: 0, opacity: 1, duration: 0.9, stagger: 0.05, ease: "back.out(1.6)" }, 0.55)
+    .to(".card", { y: 0, opacity: 1, scale: 1, rotation: (i, el) => parseFloat(el.dataset.restRot) || 0, duration: 1.1, stagger: { each: 0.08, from: "center" }, ease: "back.out(1.4)" }, 0.8)
+    .to("#subline", { opacity: 1, y: 0, duration: 0.8 }, 1.6);
 
-// ============================================================
-// T-CARD HOVER 3D LIFT (Subtle)
-// ============================================================
-document.querySelectorAll(".t-card").forEach((card) => {
-  card.addEventListener("mousemove", (e) => {
-    const r = card.getBoundingClientRect();
-    const px = (e.clientX - r.left) / r.width - 0.5;
-    const py = (e.clientY - r.top) / r.height - 0.5;
-    gsap.to(card, {
-      rotateX: -py * 8,
-      rotateY: px * 8,
-      scale: 1.04,
-      zIndex: 20,
-      duration: 0.4,
-      ease: "power2.out",
-      transformPerspective: 700,
-      overwrite: "auto"
-    });
+  // CONTINUOUS FLOAT
+  document.querySelectorAll(".card").forEach((card, i) => {
+    const rot = parseFloat(card.dataset.restRot) || 0;
+    gsap.to(card, { y: `+=${8 + (i % 3) * 5}`, rotation: rot + (i % 2 === 0 ? 1.5 : -1.5), duration: 3 + (i % 4) * 0.5, delay: 1.8 + i * 0.1, ease: "sine.inOut", yoyo: true, repeat: -1 });
   });
-  card.addEventListener("mouseleave", () => {
-    gsap.to(card, {
-      rotateX: 0,
-      rotateY: 0,
-      scale: 1,
-      zIndex: card.style.zIndex || "",
-      duration: 0.8,
-      ease: "elastic.out(1, 0.6)",
-      overwrite: "auto"
-    });
-  });
-});
 
-// ============================================================
-// SCROLL: CARDS FAN OUT, "big results" SCALES UP
-// ============================================================
-ScrollTrigger.create({
-  trigger: ".hero",
-  start: "top top",
-  end: "bottom top",
-  scrub: 0.8,
-  onUpdate: (self) => {
-    const p = self.progress;
-    // Big results scales up and stays gray
-    gsap.set(".big-results", { scale: 1 + 0.15 * p, opacity: 1 - 0.4 * p });
-    // Small team rises out
-    gsap.set(".small-team", { y: -60 * p, opacity: 1 - p * 1.5 });
-    // Cards: outer cards fly further out, center cards drift up more
-    const moves = [
-      { x: -260, y: -40, rot: -25 }, // 1
-      { x: -200, y: 20, rot: -18 }, // 2
-      { x: -120, y: 80, rot: -10 }, // 3
-      { x: -40, y: 120, rot: -4 }, // 4
-      { x: 40, y: 120, rot: 4 }, // 5
-      { x: 120, y: 80, rot: 12 }, // 6
-      { x: 200, y: 20, rot: 22 }, // 7
-      { x: 260, y: -40, rot: 28 } // 8
-    ];
-    document.querySelectorAll(".card").forEach((card, i) => {
-      const m = moves[i];
-      const rest = parseFloat(card.dataset.restRot) || 0;
-      gsap.set(card, {
-        x: m.x * p,
-        y: m.y * p,
-        rotation: rest + m.rot * p
-      });
+  // MOUSE PARALLAX
+  const hero = document.querySelector(".hero");
+  let mx = 0, my = 0, tx = 0, ty = 0;
+  let rafId;
+  const onMouseMove = (e) => {
+    const r = hero.getBoundingClientRect();
+    mx = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    my = ((e.clientY - r.top) / r.height - 0.5) * 2;
+  };
+  const onMouseLeave = () => { mx = 0; my = 0; };
+  function parallax() {
+    tx += (mx - tx) * 0.05;
+    ty += (my - ty) * 0.05;
+    document.querySelectorAll(".card").forEach((card) => {
+      const d = parseFloat(card.dataset.depth) || 8;
+      card.style.translate = `${tx * d}px ${ty * d * 0.5}px`;
     });
-    gsap.set("#subline", { opacity: 1 - p * 2 });
+    rafId = requestAnimationFrame(parallax);
   }
+  hero.addEventListener("mousemove", onMouseMove);
+  hero.addEventListener("mouseleave", onMouseLeave);
+  parallax();
+
+  // HOVER LIFT
+  document.querySelectorAll(".card").forEach((card) => {
+    card.addEventListener("mousemove", (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width - 0.5;
+      const py = (e.clientY - r.top) / r.height - 0.5;
+      gsap.to(card, { rotateX: -py * 16, rotateY: px * 16, scale: 1.12, zIndex: 20, duration: 0.4, ease: "power2.out", transformPerspective: 700, overwrite: "auto" });
+    });
+    card.addEventListener("mouseleave", () => {
+      gsap.to(card, { rotateX: 0, rotateY: 0, scale: 1, zIndex: card.style.zIndex || "", duration: 0.8, ease: "elastic.out(1, 0.6)", overwrite: "auto" });
+    });
+    card.addEventListener("click", () => {
+      gsap.fromTo(card, { scale: 1.15 }, { scale: 1.05, duration: 0.15, yoyo: true, repeat: 1, ease: "power2.inOut" });
+    });
+  });
+
+  // SCROLL FAN OUT
+  ScrollTrigger.create({
+    trigger: ".hero",
+    start: "top top",
+    end: "bottom top",
+    scrub: 0.8,
+    onUpdate: (self) => {
+      const p = self.progress;
+      gsap.set(".big-results", { scale: 1 + 0.15 * p, opacity: 1 - 0.4 * p });
+      gsap.set(".small-team", { y: -60 * p, opacity: 1 - p * 1.5 });
+      const moves = [
+        { x: -260, y: -40, rot: -25 }, { x: -200, y: 20, rot: -18 }, { x: -120, y: 80, rot: -10 }, { x: -40, y: 120, rot: -4 },
+        { x: 40, y: 120, rot: 4 }, { x: 120, y: 80, rot: 12 }, { x: 200, y: 20, rot: 22 }, { x: 260, y: -40, rot: 28 }
+      ];
+      document.querySelectorAll(".card").forEach((card, i) => {
+        const m = moves[i];
+        const rest = parseFloat(card.dataset.restRot) || 0;
+        gsap.set(card, { x: m.x * p, y: m.y * p, rotation: rest + m.rot * p });
+      });
+      gsap.set("#subline", { opacity: 1 - p * 2 });
+    }
+  });
+
+  return () => {
+    cancelAnimationFrame(rafId);
+    hero.removeEventListener("mousemove", onMouseMove);
+    hero.removeEventListener("mouseleave", onMouseLeave);
+  };
+});
+
+mm.add("(max-width: 750px)", () => {
+  // Mobile specific intro timeline
+  gsap.set(".card", { y: -200, opacity: 0, scale: 0.8 });
+  gsap.set("#mobileSubline", { opacity: 0, y: 20 });
+  
+  const intro = gsap.timeline({ defaults: { ease: "power3.out" } });
+  intro
+    .to("#nav", { opacity: 1, y: 0, duration: 0.8 }, 0.1)
+    .to(".small-team .word > span", { y: "0%", duration: 0.9, stagger: 0.08 }, 0.3)
+    .to(".big-results .letter", { y: 0, opacity: 1, duration: 0.9, stagger: 0.05 }, 0.55)
+    .to(".card", { y: 0, opacity: 1, scale: 1, duration: 1, stagger: { each: 0.05, from: "start" }, ease: "back.out(1.2)" }, 0.8)
+    .to("#mobileSubline", { opacity: 1, y: 0, duration: 0.8 }, 1.4);
+
+  // Gentle float for mobile cards (no extreme rotations)
+  document.querySelectorAll(".card").forEach((card, i) => {
+    gsap.to(card, {
+      y: `+=${5}`,
+      duration: 2 + (i % 3) * 0.5,
+      delay: 1.5 + i * 0.1,
+      ease: "sine.inOut",
+      yoyo: true,
+      repeat: -1
+    });
+  });
+  
+  // No scroll trigger for fan-out so it remains clustered
 });
 
 // ============================================================
@@ -389,3 +304,22 @@ modalClose.addEventListener("click", closeModal);
 modalOverlay.addEventListener("click", (e) => {
   if (e.target === modalOverlay) closeModal();
 });
+
+// ============================================================
+// MOBILE MENU LOGIC
+// ============================================================
+const hamburger = document.getElementById("hamburger");
+const navLinksContainer = document.getElementById("navLinks");
+
+if (hamburger && navLinksContainer) {
+  hamburger.addEventListener("click", () => {
+    navLinksContainer.classList.toggle("open");
+  });
+
+  // Close menu when clicking a link
+  navLinksContainer.querySelectorAll("a").forEach(link => {
+    link.addEventListener("click", () => {
+      navLinksContainer.classList.remove("open");
+    });
+  });
+}
