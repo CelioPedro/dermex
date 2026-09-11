@@ -130,6 +130,15 @@ mm.add("(max-width: 750px)", () => {
       yoyo: true,
       repeat: -1
     });
+
+    // Click to bring card to front
+    card.addEventListener("click", () => {
+      const isActive = card.classList.contains("active");
+      document.querySelectorAll(".card").forEach(c => c.classList.remove("active"));
+      if (!isActive) {
+        card.classList.add("active");
+      }
+    });
   });
   
   // No scroll trigger for fan-out so it remains clustered

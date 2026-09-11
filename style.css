@@ -888,6 +888,15 @@ body {
   .card .t-meta .rl {
     font-size: 9px;
   }
+  
+  /* Click state to bring card to front on mobile */
+  .card.active {
+    z-index: 50 !important;
+  }
+  .card.active .t-meta {
+    transform: translateY(0);
+    opacity: 1;
+  }
 
   .team-section {
     padding: 60px 16px 40px;
