@@ -866,6 +866,13 @@ body {
       inset 0 1px 0 rgba(255, 255, 255, 0.12),
       inset 0 -2px 4px rgba(0, 0, 0, 0.4);
   }
+  
+  /* Make client names visible on mobile (no hover needed) */
+  .t-card .t-meta {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
   .team-section {
     padding: 60px 16px 40px;
   }
