@@ -849,6 +849,15 @@ body {
   .hero {
     padding: 100px 16px 20px;
   }
+  .small-team {
+    font-size: 10vw;
+  }
+  .big-results-wrap {
+    margin-top: 0;
+  }
+  .big-results {
+    font-size: 22vw;
+  }
   .cards-row {
     position: relative;
     top: auto;
